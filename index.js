@@ -3,6 +3,7 @@ const RTMClient = require('bearychat-rtm-client');
 const RTMClientEvents = RTMClient.RTMClientEvents;
 const WebSocket = require('ws');
 const ip = require('ip');
+const ips = require('./ips');
 
 const token = process.env.BEARYCHAT_HUBOT_TOKEN;
 
@@ -26,12 +27,20 @@ client.on(RTMClientEvents.OFFLINE, function () {
 client.on(RTMClientEvents.EVENT, function (message) {
     if (message.type === 'message') {
         const text = message.text || '';
-        if (text.toLowerCase().includes('ip')) {
+        if (text.toLowerCase() === 'ip') {
             client.send({
                 type: 'message',
                 vchannel_id: message.vchannel_id,
                 text: ip.address(),
             });
+        }
+
+        if (text.toLowerCase() === 'ips') {
+          client.send({
+            type: 'message',
+            vchannel_id: message.vchannel_id,
+            text: ips(),
+          });
         }
     }
 });
